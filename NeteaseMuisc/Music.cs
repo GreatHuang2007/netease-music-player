@@ -41,7 +41,7 @@ namespace NeteaseMuisc
 
         private void search_Click(object sender, EventArgs e)//这里是搜索事件（核心）
         {
-            list_message.Items.Clear();
+         list_message.Items.Clear();
             list_message.Items.Add("正在搜索……");
             var api = new NeteaseMusicAPI();//这里用到下面的两个Class
             var apires = api.Search(music_name_s.Text);//传入内容
