@@ -28,19 +28,14 @@ Partial Class Music
         Me.search = New System.Windows.Forms.Button()
         Me.list_message = New System.Windows.Forms.ListBox()
         Me.music_play = New AxWMPLib.AxWindowsMediaPlayer()
-        Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.lb_OnPlay = New System.Windows.Forms.Label()
-        Me.bt_Back = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         CType(Me.music_play, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
         '
         Me.Panel1.BackColor = System.Drawing.SystemColors.Control
         Me.Panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.Panel1.Controls.Add(Me.Panel2)
         Me.Panel1.Controls.Add(Me.music_name_s)
         Me.Panel1.Controls.Add(Me.search)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
@@ -65,7 +60,7 @@ Partial Class Music
         '
         Me.search.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.search.BackColor = System.Drawing.SystemColors.Control
-        Me.search.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.search.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.search.Location = New System.Drawing.Point(716, 20)
         Me.search.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.search.Name = "search"
@@ -98,36 +93,6 @@ Partial Class Music
         Me.music_play.Size = New System.Drawing.Size(980, 45)
         Me.music_play.TabIndex = 3
         '
-        'Panel2
-        '
-        Me.Panel2.Controls.Add(Me.bt_Back)
-        Me.Panel2.Controls.Add(Me.lb_OnPlay)
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Enabled = False
-        Me.Panel2.Location = New System.Drawing.Point(0, 0)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(980, 77)
-        Me.Panel2.TabIndex = 7
-        Me.Panel2.Visible = False
-        '
-        'lb_OnPlay
-        '
-        Me.lb_OnPlay.AutoSize = True
-        Me.lb_OnPlay.Location = New System.Drawing.Point(59, 22)
-        Me.lb_OnPlay.Name = "lb_OnPlay"
-        Me.lb_OnPlay.Size = New System.Drawing.Size(112, 27)
-        Me.lb_OnPlay.TabIndex = 0
-        Me.lb_OnPlay.Text = "正在播放："
-        '
-        'bt_Back
-        '
-        Me.bt_Back.Location = New System.Drawing.Point(12, 18)
-        Me.bt_Back.Name = "bt_Back"
-        Me.bt_Back.Size = New System.Drawing.Size(41, 35)
-        Me.bt_Back.TabIndex = 1
-        Me.bt_Back.Text = "←"
-        Me.bt_Back.UseVisualStyleBackColor = True
-        '
         'Music
         '
         Me.AcceptButton = Me.search
@@ -145,18 +110,13 @@ Partial Class Music
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.music_play, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.Panel2.ResumeLayout(False)
-        Me.Panel2.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
 
     Friend WithEvents Panel1 As Panel
     Private WithEvents music_name_s As TextBox
-    Friend WithEvents list_message As ListBox
+    Private WithEvents list_message As ListBox
     Private WithEvents music_play As AxWMPLib.AxWindowsMediaPlayer
     Private WithEvents search As Button
-    Friend WithEvents Panel2 As Panel
-    Friend WithEvents lb_OnPlay As Label
-    Friend WithEvents bt_Back As Button
 End Class
