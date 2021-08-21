@@ -116,7 +116,7 @@ Partial Class Music
 
     Friend WithEvents Panel1 As Panel
     Private WithEvents music_name_s As TextBox
-    Private WithEvents list_message As ListBox
+    Friend WithEvents list_message As ListBox
     Private WithEvents music_play As AxWMPLib.AxWindowsMediaPlayer
     Private WithEvents search As Button
 End Class

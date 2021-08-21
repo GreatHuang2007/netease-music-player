@@ -4,6 +4,7 @@ Imports System.Windows.Forms
 Imports NeteaseMuisc
 Imports Microsoft.Win32
 Imports System.Runtime
+Imports System.Threading
 
 Public Class Music
 
@@ -19,7 +20,7 @@ Public Class Music
     End Sub
     '拖动过程中不断对x2,y2赋值
     Private Sub Panel1_MouseMove(sender As Object, e As MouseEventArgs) Handles Panel1.MouseMove
-        If e.Button = Windows.Forms.MouseButtons.Left Then
+        If e.Button = Windows.Forms.MouseButtons.Left And Me.WindowState = FormWindowState.Normal Then
             x2 = e.X
             y2 = e.Y
             Me.Left = Me.Location.X + (x2 - x1)
@@ -29,16 +30,36 @@ Public Class Music
 #End Region
 
     Class pStatus
-        Public Property Null = 0
-        Public Property Serach = 1
-        Public Property OnPlay = 2
-    End Class  'UI状态类
+        Public ReadOnly Property Null = 0
+        Public ReadOnly Property Serach = 1
+        Public ReadOnly Property OnPlay = 2
+    End Class  '表示UI状态的类
 
-    Public Property PlayStatus As New pStatus '当前UI状态
+    Public PlayStatus As New pStatus
+    Property PlayState As Integer = PlayStatus.Serach '当前UI状态
 
-    Private Sub search_Click(sender As Object, e As EventArgs) Handles search.Click  '这里是搜索事件（核心）
-        list_message.Items.Clear()
-        list_message.Items.Add("正在搜索……")
+    Private Sub SwitchTopBarUI(ByVal State As Integer)
+    End Sub
+
+    Public Sub UpdateUIState() '更新UI状态
+        Select Case Me.PlayState
+            Case PlayStatus.Serach
+                Me.list_message.Dock = DockStyle.Fill
+                Me.list_message.Enabled = True
+                Me.list_message.Visible = True
+                Me.music_play.Dock = DockStyle.Bottom
+                Me.music_name_s.Enabled = True
+                Me.search.Enabled = True
+            Case PlayStatus.OnPlay
+                Me.list_message.Enabled = False
+                Me.list_message.Visible = False
+                Me.music_play.Dock = DockStyle.Fill
+                Me.music_name_s.Enabled = False
+                Me.search.Enabled = False
+        End Select
+    End Sub
+
+    Sub SearchMusic()
         Dim api = New NeteaseMusicAPI() '这里用到下面的两个Class
         Dim apires = api.Search(music_name_s.Text) '传入内容
         Dim songmessage = "" '搜到的歌的信息先弄一个对象
@@ -53,10 +74,23 @@ Public Class Music
                 list_message.Items.Add(String.Format("{0}", m.Groups(1).Value)) '添加到list中
             Next
         Catch ex As Exception
+            MsgBox("在搜索歌曲时发生了错误..."， 16)
+            Debug.Print(ex.ToString())
         End Try
     End Sub
 
+    Private Sub search_Click(sender As Object, e As EventArgs) Handles search.Click  '这里是搜索事件（核心）
+        Me.PlayState = PlayStatus.Serach '修改播放状态
+        UpdateUIState() '更新UI状态
+        list_message.Items.Clear()
+        list_message.Items.Add("正在搜索……")
+        Dim SearchThd As New Thread(AddressOf Me.SearchMusic)
+        SearchThd.Start()
+    End Sub
+
     Private Sub list_message_DoubleClick(sender As Object, e As EventArgs) Handles list_message.DoubleClick '双击列表的事件
+        Me.PlayState = PlayStatus.OnPlay '修改播放状态
+        UpdateUIState() '更新UI状态
         Dim address = New Regex("!(.*?)!") '这里的理解和下面一样
         Dim matches_name As MatchCollection = address.Matches(Me.list_message.SelectedItem.ToString())
         For Each m As Match In matches_name
