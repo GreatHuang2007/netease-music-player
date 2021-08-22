@@ -9,7 +9,7 @@ Imports System.ComponentModel
 
 Public Class Music
 
-#Region "窗口拖动"
+#Region "自定义标题栏"
     Dim x1, x2, y1, y2 As Integer
 
     '鼠标左键按下后将x1,y1赋值
@@ -28,6 +28,16 @@ Public Class Music
             Me.Top = Me.Location.Y + (y2 - y1)
         End If
     End Sub
+    '双击最大化/还原窗口
+    Private Sub Panels_DoubleCLick(sender As Object, e As MouseEventArgs) Handles Panel1.MouseDoubleClick, Panel2.MouseDoubleClick
+        Select Case Me.WindowState
+            Case FormWindowState.Maximized
+                Me.WindowState = FormWindowState.Normal
+            Case FormWindowState.Normal
+                Me.WindowState = FormWindowState.Maximized
+        End Select
+    End Sub
+
 #End Region
 
     Class pStatus
@@ -48,7 +58,7 @@ Public Class Music
             Select Case Me.PlayState
                 Case .Null
                     Me.list_message.Dock = DockStyle.Fill
-                    Me.list_message.Enabled = True
+                    Me.list_message.Enabled = False
                     Me.list_message.Visible = True
                     Me.music_play.Dock = DockStyle.Bottom
                     Me.music_name_s.Enabled = True
@@ -73,9 +83,11 @@ Public Class Music
                         Me.bt_Back.Enabled = True
                         Me.bt_Back.Visible = True
                     End If
+                    Me.bt_Back.ForeColor = Me.search.ForeColor
+                    Me.bt_Back.BackColor = Me.search.BackColor
                 Case .OnSearch
                     Me.list_message.Dock = DockStyle.Fill
-                    Me.list_message.Enabled = True
+                    Me.list_message.Enabled = False
                     Me.list_message.Visible = True
                     Me.music_play.Dock = DockStyle.Bottom
                     Me.music_name_s.Enabled = False
@@ -94,10 +106,9 @@ Public Class Music
                     Me.bt_Back.Text = "←"
                     Me.bt_Back.Enabled = True
                     Me.bt_Back.Visible = True
-                    Dim address = New Regex("!(.*?)!")
-                    Dim matches_name As MatchCollection = address.Matches(Me.list_message.SelectedItem.ToString())
-                    Dim SongName As String = Replace(Me.list_message.SelectedItem.ToString(), matches_name.ToString(), " ")
+                    Dim SongName As String = Replace(Me.list_message.SelectedItem.ToString(), "!" & Me.music_play.URL & "!", " ")
                     Me.lb_OnPlay.Text = "正在播放：" + SongName
+                    TitleActive()
                 Case .JustPlayer
                     Me.Panel2.Enabled = True
                     Me.Panel2.Visible = True
@@ -109,6 +120,7 @@ Public Class Music
                     Me.bt_Back.Text = "←"
                     Me.bt_Back.Enabled = True
                     Me.bt_Back.Visible = True
+                    TitleActive()
             End Select
         End With
     End Sub
@@ -149,13 +161,15 @@ Public Class Music
             UpdateUIState() '更新UI状态
             SearchThd = New Thread(AddressOf Me.SearchMusic) '创建新的搜索线程
             list_message.Items.Clear()
-            list_message.Items.Add("正在搜索……")
+            list_message.Items.Add("")
+            list_message.Items.Add("  正在搜索……")
             SearchThd.Start() '开始音乐搜索线程
         ElseIf PlayState = PlayStatus.OnSearch Then
             Me.PlayState = PlayStatus.Search '修改播放状态
             UpdateUIState() '更新UI状态
             list_message.Items.Clear()
-            list_message.Items.Add("已取消搜索")
+            list_message.Items.Add("")
+            list_message.Items.Add("  已取消搜索")
             SearchThd.Suspend()
             SearchThd.Abort()
         End If
@@ -168,6 +182,7 @@ Public Class Music
             For Each m As Match In matches_name
                 music_play.URL = String.Format("{0}", m.Groups(1).Value) '调用MediaPlayer播放获取到的链接music_play.Ctlcontrols.play()
                 If Me.music_play.URL.ToString() = "" Or Me.music_play.URL.ToString = vbNullString Then
+                    UpdateUIState()
                     MsgBox("在试图播放该歌曲的时候出现了问题……", 16)
                 Else
                     Me.PlayState = PlayStatus.OnPlay
@@ -194,6 +209,8 @@ Public Class Music
                 Me.Panel1.BackColor = System.Drawing.SystemColors.Highlight
                 With SystemColors.Highlight
                     Me.lb_OnPlay.ForeColor = CalcBorW(.R, .G, .B) '设置标题栏字体颜色为黑色或白色
+                    Me.bt_Back.BackColor = Me.search.BackColor()
+                    Me.bt_Back.ForeColor = Me.search.ForeColor()
                 End With
             Else 'Windows 8及以上版本的Win系统
                 Dim FormTitleColor As Boolean = My.Computer.Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorPrevalence", True)
@@ -208,8 +225,12 @@ Public Class Music
                 End If
                 Me.Panel1.BackColor = Color.FromArgb(255, R, G, B)
                 Me.lb_OnPlay.ForeColor = CalcBorW(R, G, B) '设置标题栏字体颜色为黑色或白色
+                Me.music_name_s.Left = 123
+                Me.search.Left = Me.Width - 123 - Me.search.Width
+                Me.music_name_s.Width = Me.Width - Me.search.Width - 123 * 2 - 15
                 Me.bt_Back.BackColor = Me.lb_OnPlay.ForeColor
                 Me.bt_Back.ForeColor = Me.Panel1.BackColor
+                Me.lb_OnPlay.Top = Me.search.Top + (Me.search.Height - Me.lb_OnPlay.Height) / 2
             End If
         End If
     End Sub
@@ -243,8 +264,12 @@ Public Class Music
         TitleActive()
         Me.search.Top = Me.music_name_s.Top
         Me.search.Height = Me.music_name_s.Height
+        Me.bt_Back.Top = Me.search.Top
+        Me.bt_Back.Height = Me.search.Height
+        Me.bt_Back.Width = Me.bt_Back.Height
         Me.list_message.Items.Clear()
-        Me.list_message.Items.Add("空空如也，不如搜索些什么吧！")
+        list_message.Items.Add("")
+        Me.list_message.Items.Add("  空空如也，不如搜索些什么吧！")
         UpdateUIState()
     End Sub
 

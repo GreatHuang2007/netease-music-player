@@ -48,7 +48,7 @@ Partial Class Music
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(980, 77)
+        Me.Panel1.Size = New System.Drawing.Size(980, 65)
         Me.Panel1.TabIndex = 0
         '
         'Panel2
@@ -58,7 +58,7 @@ Partial Class Music
         Me.Panel2.Enabled = False
         Me.Panel2.Location = New System.Drawing.Point(0, 0)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(980, 77)
+        Me.Panel2.Size = New System.Drawing.Size(980, 65)
         Me.Panel2.TabIndex = 7
         Me.Panel2.Visible = False
         '
@@ -76,7 +76,7 @@ Partial Class Music
         Me.music_name_s.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.music_name_s.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.music_name_s.Location = New System.Drawing.Point(123, 20)
+        Me.music_name_s.Location = New System.Drawing.Point(123, 14)
         Me.music_name_s.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.music_name_s.Name = "music_name_s"
         Me.music_name_s.Size = New System.Drawing.Size(581, 34)
@@ -97,6 +97,7 @@ Partial Class Music
         '
         'bt_Back
         '
+        Me.bt_Back.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.bt_Back.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bt_Back.Location = New System.Drawing.Point(12, 19)
         Me.bt_Back.Name = "bt_Back"
@@ -111,11 +112,11 @@ Partial Class Music
         Me.list_message.Dock = System.Windows.Forms.DockStyle.Fill
         Me.list_message.FormattingEnabled = True
         Me.list_message.ItemHeight = 27
-        Me.list_message.Location = New System.Drawing.Point(0, 77)
+        Me.list_message.Location = New System.Drawing.Point(0, 65)
         Me.list_message.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.list_message.Name = "list_message"
         Me.list_message.ScrollAlwaysVisible = True
-        Me.list_message.Size = New System.Drawing.Size(980, 458)
+        Me.list_message.Size = New System.Drawing.Size(980, 470)
         Me.list_message.TabIndex = 2
         '
         'music_play
@@ -135,6 +136,7 @@ Partial Class Music
         Me.AutoScaleDimensions = New System.Drawing.SizeF(12.0!, 27.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Window
+        Me.CancelButton = Me.bt_Back
         Me.ClientSize = New System.Drawing.Size(980, 580)
         Me.Controls.Add(Me.list_message)
         Me.Controls.Add(Me.music_play)
