@@ -35,6 +35,7 @@ Public Class Music
         Public ReadOnly Property Search = 1
         Public ReadOnly Property OnSearch = 2
         Public ReadOnly Property OnPlay = 3
+        Public ReadOnly Property JustPlayer = 4
     End Class  '表示UI状态的类
 
     Public PlayStatus As New pStatus
@@ -43,44 +44,73 @@ Public Class Music
     Public Sub UpdateUIState() '更新UI状态
         Me.Panel2.Enabled = False
         Me.Panel2.Visible = False
-        Select Case Me.PlayState
-            Case PlayStatus.Null
-                Me.list_message.Dock = DockStyle.Fill
-                Me.list_message.Enabled = True
-                Me.list_message.Visible = True
-                Me.music_play.Dock = DockStyle.Bottom
-                Me.music_name_s.Enabled = True
-                Me.search.Enabled = True
-                Me.search.Text = "搜索"
-            Case PlayStatus.Search
-                Me.list_message.Dock = DockStyle.Fill
-                Me.list_message.Enabled = True
-                Me.list_message.Visible = True
-                Me.music_play.Dock = DockStyle.Bottom
-                Me.music_name_s.Enabled = True
-                Me.search.Enabled = True
-                Me.search.Text = "搜索"
-            Case PlayStatus.OnSearch
-                Me.list_message.Dock = DockStyle.Fill
-                Me.list_message.Enabled = True
-                Me.list_message.Visible = True
-                Me.music_play.Dock = DockStyle.Bottom
-                Me.music_name_s.Enabled = False
-                Me.search.Enabled = True
-                Me.search.Text = "取消"
-            Case PlayStatus.OnPlay
-                Me.Panel2.Enabled = True
-                Me.Panel2.Visible = True
-                Me.list_message.Enabled = False
-                Me.list_message.Visible = False
-                Me.music_play.Dock = DockStyle.Fill
-                Me.music_name_s.Enabled = False
-                Me.search.Enabled = False
-                Dim address = New Regex("!(.*?)!")
-                Dim matches_name As MatchCollection = address.Matches(Me.list_message.SelectedItem.ToString())
-                Dim SongName As String = Replace(Me.list_message.SelectedItem.ToString(), matches_name.ToString(), " ")
-                Me.lb_OnPlay.Text = "正在播放：" + SongName
-        End Select
+        With Me.PlayStatus
+            Select Case Me.PlayState
+                Case .Null
+                    Me.list_message.Dock = DockStyle.Fill
+                    Me.list_message.Enabled = True
+                    Me.list_message.Visible = True
+                    Me.music_play.Dock = DockStyle.Bottom
+                    Me.music_name_s.Enabled = True
+                    Me.search.Enabled = True
+                    Me.search.Text = "搜索"
+                    Me.bt_Back.Enabled = False
+                    Me.bt_Back.Visible = False
+                Case .Search
+                    Me.list_message.Dock = DockStyle.Fill
+                    Me.list_message.Enabled = True
+                    Me.list_message.Visible = True
+                    Me.music_play.Dock = DockStyle.Bottom
+                    Me.music_play.Height = 45
+                    Me.music_name_s.Enabled = True
+                    Me.search.Enabled = True
+                    Me.search.Text = "搜索"
+                    Me.bt_Back.Text = "↑"
+                    If Me.music_play.URL = "" Or Me.music_play.URL = vbNullString Then
+                        Me.bt_Back.Enabled = False
+                        Me.bt_Back.Visible = False
+                    Else
+                        Me.bt_Back.Enabled = True
+                        Me.bt_Back.Visible = True
+                    End If
+                Case .OnSearch
+                    Me.list_message.Dock = DockStyle.Fill
+                    Me.list_message.Enabled = True
+                    Me.list_message.Visible = True
+                    Me.music_play.Dock = DockStyle.Bottom
+                    Me.music_name_s.Enabled = False
+                    Me.search.Enabled = True
+                    Me.search.Text = "取消"
+                    Me.bt_Back.Enabled = False
+                    Me.bt_Back.Visible = False
+                Case .OnPlay
+                    Me.Panel2.Enabled = True
+                    Me.Panel2.Visible = True
+                    Me.list_message.Enabled = False
+                    Me.list_message.Visible = False
+                    Me.music_play.Dock = DockStyle.Fill
+                    Me.music_name_s.Enabled = False
+                    Me.search.Enabled = False
+                    Me.bt_Back.Text = "←"
+                    Me.bt_Back.Enabled = True
+                    Me.bt_Back.Visible = True
+                    Dim address = New Regex("!(.*?)!")
+                    Dim matches_name As MatchCollection = address.Matches(Me.list_message.SelectedItem.ToString())
+                    Dim SongName As String = Replace(Me.list_message.SelectedItem.ToString(), matches_name.ToString(), " ")
+                    Me.lb_OnPlay.Text = "正在播放：" + SongName
+                Case .JustPlayer
+                    Me.Panel2.Enabled = True
+                    Me.Panel2.Visible = True
+                    Me.list_message.Enabled = False
+                    Me.list_message.Visible = False
+                    Me.music_play.Dock = DockStyle.Fill
+                    Me.music_name_s.Enabled = False
+                    Me.search.Enabled = False
+                    Me.bt_Back.Text = "←"
+                    Me.bt_Back.Enabled = True
+                    Me.bt_Back.Visible = True
+            End Select
+        End With
     End Sub
 
     Sub SearchMusic() '搜索音乐的Sub
@@ -156,7 +186,7 @@ Public Class Music
     End Function
 
     Public Sub TitleActive()  '窗口得到焦点
-        If Environment.OSVersion.Version.Major < 6 Then '判断是否是Vista一下的系统
+        If Environment.OSVersion.Version.Major < 6 Then '判断是否是Vista以下的系统
             MsgBox("请在Windows Vista或更高版本的Windows上执行此程序", 16)
             End
         ElseIf Environment.OSVersion.Version.Major = 6 Then '判断Windows 7或Vista
@@ -178,8 +208,25 @@ Public Class Music
                 End If
                 Me.Panel1.BackColor = Color.FromArgb(255, R, G, B)
                 Me.lb_OnPlay.ForeColor = CalcBorW(R, G, B) '设置标题栏字体颜色为黑色或白色
+                Me.bt_Back.BackColor = Me.lb_OnPlay.ForeColor
+                Me.bt_Back.ForeColor = Me.Panel1.BackColor
             End If
         End If
+    End Sub
+
+    Private Sub bt_Back_Click(sender As Object, e As EventArgs) Handles bt_Back.Click
+        Select Case Me.PlayState
+            Case PlayStatus.Search
+                Me.PlayState = PlayStatus.JustPlayer
+            Case PlayStatus.OnPlay
+                Me.PlayState = PlayStatus.Search
+            Case PlayStatus.JustPlayer
+                Me.PlayState = PlayStatus.Search
+            Case Else
+                Me.bt_Back.Enabled = False
+                Me.bt_Back.Visible = False
+        End Select
+        UpdateUIState()
     End Sub
 
     Public Sub TitleInactive()  '窗口失去焦点
@@ -198,6 +245,7 @@ Public Class Music
         Me.search.Height = Me.music_name_s.Height
         Me.list_message.Items.Clear()
         Me.list_message.Items.Add("空空如也，不如搜索些什么吧！")
+        UpdateUIState()
     End Sub
 
     Private Sub Music_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing  '关闭窗口

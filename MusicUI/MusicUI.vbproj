@@ -145,11 +145,5 @@
       <Name>NeteaseMuisc</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\TitleBarFill.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\TitleBarFill.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

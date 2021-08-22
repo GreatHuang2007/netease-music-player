@@ -24,22 +24,23 @@ Partial Class Music
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Music))
         Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.music_name_s = New System.Windows.Forms.TextBox()
-        Me.search = New System.Windows.Forms.Button()
-        Me.list_message = New System.Windows.Forms.ListBox()
-        Me.music_play = New AxWMPLib.AxWindowsMediaPlayer()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.lb_OnPlay = New System.Windows.Forms.Label()
+        Me.music_name_s = New System.Windows.Forms.TextBox()
+        Me.search = New System.Windows.Forms.Button()
         Me.bt_Back = New System.Windows.Forms.Button()
+        Me.list_message = New System.Windows.Forms.ListBox()
+        Me.music_play = New AxWMPLib.AxWindowsMediaPlayer()
         Me.Panel1.SuspendLayout()
-        CType(Me.music_play, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
+        CType(Me.music_play, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Panel1
         '
         Me.Panel1.BackColor = System.Drawing.SystemColors.Control
         Me.Panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.Panel1.Controls.Add(Me.bt_Back)
         Me.Panel1.Controls.Add(Me.Panel2)
         Me.Panel1.Controls.Add(Me.music_name_s)
         Me.Panel1.Controls.Add(Me.search)
@@ -49,6 +50,26 @@ Partial Class Music
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(980, 77)
         Me.Panel1.TabIndex = 0
+        '
+        'Panel2
+        '
+        Me.Panel2.Controls.Add(Me.lb_OnPlay)
+        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel2.Enabled = False
+        Me.Panel2.Location = New System.Drawing.Point(0, 0)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(980, 77)
+        Me.Panel2.TabIndex = 7
+        Me.Panel2.Visible = False
+        '
+        'lb_OnPlay
+        '
+        Me.lb_OnPlay.AutoSize = True
+        Me.lb_OnPlay.Location = New System.Drawing.Point(59, 22)
+        Me.lb_OnPlay.Name = "lb_OnPlay"
+        Me.lb_OnPlay.Size = New System.Drawing.Size(112, 27)
+        Me.lb_OnPlay.TabIndex = 0
+        Me.lb_OnPlay.Text = "正在播放："
         '
         'music_name_s
         '
@@ -74,6 +95,16 @@ Partial Class Music
         Me.search.Text = "搜索"
         Me.search.UseVisualStyleBackColor = False
         '
+        'bt_Back
+        '
+        Me.bt_Back.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.bt_Back.Location = New System.Drawing.Point(12, 19)
+        Me.bt_Back.Name = "bt_Back"
+        Me.bt_Back.Size = New System.Drawing.Size(41, 35)
+        Me.bt_Back.TabIndex = 8
+        Me.bt_Back.Text = "←"
+        Me.bt_Back.UseVisualStyleBackColor = True
+        '
         'list_message
         '
         Me.list_message.BorderStyle = System.Windows.Forms.BorderStyle.None
@@ -98,36 +129,6 @@ Partial Class Music
         Me.music_play.Size = New System.Drawing.Size(980, 45)
         Me.music_play.TabIndex = 3
         '
-        'Panel2
-        '
-        Me.Panel2.Controls.Add(Me.bt_Back)
-        Me.Panel2.Controls.Add(Me.lb_OnPlay)
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Enabled = False
-        Me.Panel2.Location = New System.Drawing.Point(0, 0)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(980, 77)
-        Me.Panel2.TabIndex = 7
-        Me.Panel2.Visible = False
-        '
-        'lb_OnPlay
-        '
-        Me.lb_OnPlay.AutoSize = True
-        Me.lb_OnPlay.Location = New System.Drawing.Point(59, 22)
-        Me.lb_OnPlay.Name = "lb_OnPlay"
-        Me.lb_OnPlay.Size = New System.Drawing.Size(112, 27)
-        Me.lb_OnPlay.TabIndex = 0
-        Me.lb_OnPlay.Text = "正在播放："
-        '
-        'bt_Back
-        '
-        Me.bt_Back.Location = New System.Drawing.Point(12, 18)
-        Me.bt_Back.Name = "bt_Back"
-        Me.bt_Back.Size = New System.Drawing.Size(41, 35)
-        Me.bt_Back.TabIndex = 1
-        Me.bt_Back.Text = "←"
-        Me.bt_Back.UseVisualStyleBackColor = True
-        '
         'Music
         '
         Me.AcceptButton = Me.search
@@ -144,9 +145,9 @@ Partial Class Music
         Me.Text = "Netease Music Player"
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
-        CType(Me.music_play, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
+        CType(Me.music_play, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
