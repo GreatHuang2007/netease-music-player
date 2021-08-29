@@ -24,13 +24,14 @@ Partial Class Music
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Music))
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.bt_Back = New System.Windows.Forms.Button()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.lb_OnPlay = New System.Windows.Forms.Label()
         Me.music_name_s = New System.Windows.Forms.TextBox()
         Me.search = New System.Windows.Forms.Button()
-        Me.bt_Back = New System.Windows.Forms.Button()
         Me.list_message = New System.Windows.Forms.ListBox()
         Me.music_play = New AxWMPLib.AxWindowsMediaPlayer()
+        Me.music_message = New System.Windows.Forms.ListBox()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         CType(Me.music_play, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -50,6 +51,17 @@ Partial Class Music
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(980, 65)
         Me.Panel1.TabIndex = 0
+        '
+        'bt_Back
+        '
+        Me.bt_Back.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.bt_Back.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.bt_Back.Location = New System.Drawing.Point(12, 19)
+        Me.bt_Back.Name = "bt_Back"
+        Me.bt_Back.Size = New System.Drawing.Size(41, 35)
+        Me.bt_Back.TabIndex = 8
+        Me.bt_Back.Text = "←"
+        Me.bt_Back.UseVisualStyleBackColor = True
         '
         'Panel2
         '
@@ -95,17 +107,6 @@ Partial Class Music
         Me.search.Text = "搜索"
         Me.search.UseVisualStyleBackColor = False
         '
-        'bt_Back
-        '
-        Me.bt_Back.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bt_Back.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bt_Back.Location = New System.Drawing.Point(12, 19)
-        Me.bt_Back.Name = "bt_Back"
-        Me.bt_Back.Size = New System.Drawing.Size(41, 35)
-        Me.bt_Back.TabIndex = 8
-        Me.bt_Back.Text = "←"
-        Me.bt_Back.UseVisualStyleBackColor = True
-        '
         'list_message
         '
         Me.list_message.BorderStyle = System.Windows.Forms.BorderStyle.None
@@ -130,6 +131,17 @@ Partial Class Music
         Me.music_play.Size = New System.Drawing.Size(980, 45)
         Me.music_play.TabIndex = 3
         '
+        'music_message
+        '
+        Me.music_message.Enabled = False
+        Me.music_message.FormattingEnabled = True
+        Me.music_message.ItemHeight = 27
+        Me.music_message.Location = New System.Drawing.Point(446, 230)
+        Me.music_message.Name = "music_message"
+        Me.music_message.Size = New System.Drawing.Size(258, 58)
+        Me.music_message.TabIndex = 4
+        Me.music_message.Visible = False
+        '
         'Music
         '
         Me.AcceptButton = Me.search
@@ -138,6 +150,7 @@ Partial Class Music
         Me.BackColor = System.Drawing.SystemColors.Window
         Me.CancelButton = Me.bt_Back
         Me.ClientSize = New System.Drawing.Size(980, 580)
+        Me.Controls.Add(Me.music_message)
         Me.Controls.Add(Me.list_message)
         Me.Controls.Add(Me.music_play)
         Me.Controls.Add(Me.Panel1)
@@ -162,4 +175,5 @@ Partial Class Music
     Friend WithEvents Panel2 As Panel
     Friend WithEvents lb_OnPlay As Label
     Friend WithEvents bt_Back As Button
+    Friend WithEvents music_message As ListBox
 End Class

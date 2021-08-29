@@ -1,11 +1,12 @@
-﻿Imports System
-Imports System.Text.RegularExpressions
-Imports System.Windows.Forms
+﻿Imports MusicUI
 Imports NeteaseMuisc
 Imports Microsoft.Win32
-Imports System.Runtime
-Imports System.Threading
+Imports System
 Imports System.ComponentModel
+Imports System.Runtime
+Imports System.Text.RegularExpressions
+Imports System.Threading
+Imports System.Windows.Forms
 
 Public Class Music
 
@@ -126,29 +127,54 @@ Public Class Music
     End Sub
 
     Sub SearchMusic() '搜索音乐的Sub
-        Dim api = New NeteaseMusicAPI() '这里用到下面的两个Class
-        Dim apires = api.Search(music_name_s.Text) '传入内容
+        Dim api '这里用到下面的两个Class
+        Dim apires '传入内容
         Dim songmessage = "" '搜到的歌的信息先弄一个对象
         Try
+            api = New NeteaseMusicAPI() '这里用到下面的两个Class
+            apires = api.Search(music_name_s.Text) '传入内容
             For Each song In apires.Result.Songs '循环读取歌曲信息
                 songmessage += String.Format("@{0} - {1} !{2}! #", song.Name, song.Ar(0).Name, api.GetSongsUrl(New Long() {song.Id}).Data(0).Url)
             Next
             Dim web = New Regex("@(.*?)#") '读取规则@和#之间的内容
             Dim matches_web As MatchCollection = web.Matches(songmessage)
-            If Me.list_message.InvokeRequired Then
-                Me.list_message.Invoke(New Action(Sub()
-                                                      list_message.Items.Clear()
-                                                      For Each m As Match In matches_web '循环读取内容
-                                                          list_message.Items.Add(String.Format("{0}", m.Groups(1).Value)) '添加到list中
-                                                      Next
-                                                  End Sub))
-            End If
+            Me.music_message.Invoke(New Action(Sub()
+                                                   music_message.Items.Clear()
+                                                   For Each m As Match In matches_web '循环读取内容
+                                                       music_message.Items.Add(String.Format("{0}", m.Groups(1).Value)) '添加到list中
+                                                   Next
+                                               End Sub))
             Me.Invoke(Sub()
+                          Me.list_message.Items.Clear()
+                          For Each songName In music_message.Items
+                              Dim address = New Regex("!(.*?)!") '这里的理解和下面一样
+                              Dim matches_name As MatchCollection = address.Matches(songName.ToString())
+                              For Each m As Match In matches_name
+                                  Dim URL As String
+                                  URL = String.Format("{0}", m.Groups(1).Value)
+                                  If URL = "" Or URL = vbNullString Then
+                                      Dim SgName As String = Replace(songName.ToString(), "!" & URL & "!", " ")
+                                      Me.list_message.Items.Add(" " + SgName + " !")
+                                  Else
+                                      Dim SgName As String = Replace(songName.ToString(), "!" & URL & "!", " ")
+                                      Me.list_message.Items.Add(" " + SgName)
+                                  End If
+                              Next
+                          Next
                           Me.PlayState = PlayStatus.Search
                           UpdateUIState()
                       End Sub)
         Catch ex As Exception
-            MsgBox("在搜索歌曲时发生了错误..."， 16)
+            With Me.list_message.Items
+                list_message.Invoke(Sub()
+                                        .Clear()
+                                        .Add("")
+                                        .Add("  在搜索时发生了错误……")
+                                        .Add("  详细信息：" + ex.Message)
+                                        Me.PlayState = PlayStatus.Null()
+                                        UpdateUIState()
+                                    End Sub)
+            End With
         End Try
     End Sub
 
@@ -178,7 +204,7 @@ Public Class Music
     Private Sub list_message_DoubleClick(sender As Object, e As EventArgs) Handles list_message.DoubleClick '双击列表的事件
         If Not (Me.PlayState = PlayStatus.Null Or Me.PlayState = PlayStatus.OnSearch) Then
             Dim address = New Regex("!(.*?)!") '这里的理解和下面一样
-            Dim matches_name As MatchCollection = address.Matches(Me.list_message.SelectedItem.ToString())
+            Dim matches_name As MatchCollection = address.Matches(Me.music_message.Items(Me.list_message.SelectedIndex))
             For Each m As Match In matches_name
                 music_play.URL = String.Format("{0}", m.Groups(1).Value) '调用MediaPlayer播放获取到的链接music_play.Ctlcontrols.play()
                 If Me.music_play.URL.ToString() = "" Or Me.music_play.URL.ToString = vbNullString Then
@@ -224,13 +250,15 @@ Public Class Music
                     B = Int32.Parse(FormColorSource.Substring(6, 2), Globalization.NumberStyles.HexNumber)
                 End If
                 Me.Panel1.BackColor = Color.FromArgb(255, R, G, B)
-                Me.lb_OnPlay.ForeColor = CalcBorW(R, G, B) '设置标题栏字体颜色为黑色或白色
+                Me.lb_OnPlay.ForeColor = CalcBorW(R, G, B) '设置标题栏字体颜色为黑色或白色\
+                Me.music_name_s.Top = 10
                 Me.music_name_s.Left = 123
                 Me.search.Left = Me.Width - 123 - Me.search.Width
                 Me.music_name_s.Width = Me.Width - Me.search.Width - 123 * 2 - 15
                 Me.bt_Back.BackColor = Me.lb_OnPlay.ForeColor
                 Me.bt_Back.ForeColor = Me.Panel1.BackColor
                 Me.lb_OnPlay.Top = Me.search.Top + (Me.search.Height - Me.lb_OnPlay.Height) / 2
+                Me.Panel1.Height = Me.music_name_s.Height + 25
             End If
         End If
     End Sub
